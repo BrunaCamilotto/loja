@@ -131,3 +131,10 @@ INSERT INTO Estoque (id_produto, id_loja, quantidade_disponivel) VALUES
 (10, 3, 2),
 (11, 2, 10),
 (11, 3, 3);
+
+CREATE TABLE carrinho (
+	id_produto INT(4) PRIMARY KEY,
+    -- id_usuario INT(4) PRIMARY KEY,
+    quantidade INT(4),
+    FOREIGN KEY (id_produto) REFERENCES Produto(id)
+);

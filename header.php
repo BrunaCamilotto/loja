@@ -1,12 +1,18 @@
 <?php
-if (isset($_GET["search"]) && !empty($_GET["search"])) {
-    $search = $_GET["search"];
-} else {
-    $search = "";
-}
+
+require_once("conexao.php");
+
+// Texto da pesquisa
+$search = (isset($_GET["search"]) && !empty($_GET["search"])) ? $_GET["search"] : "";
+
+// Quantidade de itens no carrinho
+$stmt = $conn->prepare("SELECT COUNT(1) AS quantidade FROM carrinho");
+$stmt->execute();
+$carrinho = $stmt->fetch(PDO::FETCH_ASSOC);
+
 ?>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
     <div class="container-fluid">
         <a class="navbar-brand" href="/loja">
             Loja da
@@ -30,5 +36,11 @@ if (isset($_GET["search"]) && !empty($_GET["search"])) {
                 <button class="btn btn-outline-primary" type="submit">Busca</button>
             </form>
         </div>
+        <div style="width: 16px"></div>
+        <a href="/loja/carrinho.php" class="btn btn-outline-light">
+            <i class="bi bi-cart"></i>
+            <span class="badge text-bg-light"><?= $carrinho["quantidade"] ?></span>
+        </a>
+
     </div>
 </nav>

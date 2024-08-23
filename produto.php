@@ -9,19 +9,19 @@ require_once("conexao.php");
 $id = $_GET["id"];
 
 try {
-    $smtp = $conn->prepare("SELECT nome, tipo, categoria, descricao, preco, data_lancamento, desconto_usados FROM produto WHERE id = " . $id);
-    $smtp->execute();
-    $produto = $smtp->fetch(PDO::FETCH_ASSOC);
+    $stmt = $conn->prepare("SELECT nome, tipo, categoria, descricao, preco, data_lancamento, desconto_usados FROM produto WHERE id = " . $id);
+    $stmt->execute();
+    $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $smtp = $conn->prepare("
+    $stmt = $conn->prepare("
         SELECT c.nome, c.descricao
         FROM produto_caracteristica AS pc
         INNER JOIN caracteristica AS c
         ON pc.id_caracteristica = c.id
         WHERE pc.id_produto = " . $id
     );
-    $smtp->execute();
-    $caracteristicas = $smtp->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->execute();
+    $caracteristicas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
 }
@@ -33,9 +33,10 @@ try {
 <!doctype html>
 <html lang="pt-br">
     <head>
-        <title>Loja</title>
+        <title><?= $produto["nome"] ?> | Loja</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
     </head>
 
@@ -43,7 +44,7 @@ try {
         
         <?php require("header.php") ?>
 
-        <div class="container">
+        <div class="container mt-3">
             <a href="/loja" class="link-primary">Voltar</a>
 
             <h2 class="mt-3"><?= $produto["nome"] ?></h2>
@@ -56,7 +57,7 @@ try {
                     <br/>
                     <span><?= $produto["descricao"] ?></span>
                 </div>
-                <div class="col-12 col-md-6 d-flex flex-column align-items-end">
+                <div class="col-12 col-md-6 d-flex flex-column align-items-end justify-content-end">
                     <?php
                         if ($produto["desconto_usados"] > 0) {
                             ?>
@@ -64,7 +65,12 @@ try {
                             <?php
                         }
                     ?>
-                    <h3>R$ <?= $produto["preco"] ?></h3>                    
+                    <h3>R$ <?= $produto["preco"] ?></h3>      
+
+                    <form action="/loja/carrinho.php" method="GET">
+                        <input type="hidden" name="id" value="<?= $id ?>">
+                        <input class="btn btn-success mt-1" type="submit" value="Adicionar ao carrinho">
+                    </form>
                 </div>
             </div>
 
