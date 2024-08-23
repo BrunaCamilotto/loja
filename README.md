@@ -69,16 +69,17 @@ SELECT id, nome, descricao, preco, tipo, categoria
 FROM produto
 ```
 
-#### Buscar produtos de acordo com termo pesquisado
-A busca funciona tanto por nome, quanto para tipo, categoria e preço.
+#### Buscar produtos com os filtros
+A busca funciona tanto por nome e descrição apenas, pois existem filtros para outras opções.
 
 ```sql
-SELECT id, nome, descricao, preco, tipo, categoria
+SELECT id, nome, descricao, preco, tipo, categoria, data_lancamento
 FROM produto
-WHERE LOWER(nome) LIKE LOWER('%TV%')
-OR LOWER(tipo) = LOWER('TV')
-OR LOWER(categoria) = LOWER('TV')
-OR preco LIKE '%TV%'
+WHERE (LOWER(nome) LIKE LOWER('%smart%') OR LOWER(descricao) LIKE LOWER('%smart%'))
+AND tipo IN ('Novo','Usado','Promoção')
+AND categoria IN ('Eletronico','Telefonia','Informatica')
+AND preco >= 10
+AND preco <= 1000
 ```
 
 #### Buscar características de um produto
@@ -88,4 +89,18 @@ FROM produto_caracteristica AS pc
 INNER JOIN caracteristica AS c
 ON pc.id_caracteristica = c.id
 WHERE pc.id_produto = 1
+```
+#### Inserir ou atualizar produto no carrinho
+```sql
+INSERT INTO carrinho (id_produto, quantidade)
+VALUES (:id_produto, :quantidade)
+ON DUPLICATE KEY UPDATE quantidade = VALUES(quantidade);
+```
+
+#### Selecionar produtos no carrinho
+```sql
+SELECT p.id, p.nome, p.preco, c.quantidade
+FROM carrinho AS c
+INNER JOIN produto AS p
+ON c.id_produto = p.id;
 ```

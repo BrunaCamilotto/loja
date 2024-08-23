@@ -1,5 +1,5 @@
 <?php
-
+// Verifica se existe e se não está vazio
 if (!isset($_GET["id"]) || empty($_GET["id"])) {
     exit(404);
 }
@@ -9,7 +9,9 @@ require_once("conexao.php");
 $id = $_GET["id"];
 
 try {
+    // Prepara a consulta SQL
     $stmt = $conn->prepare("SELECT nome, tipo, categoria, descricao, preco, data_lancamento, desconto_usados FROM produto WHERE id = " . $id);
+    // Executa
     $stmt->execute();
     $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 

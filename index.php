@@ -54,8 +54,7 @@ try {
     $filtros = array();
 
     if (!empty($search)) {
-        $filtros[] = "LOWER(nome) LIKE LOWER('%" . $search . "%')";
-        $filtros[] = "LOWER(descricao) LIKE LOWER('%" . $search . "%')";
+        $filtros[] = "(LOWER(nome) LIKE LOWER('%" . $search . "%') OR LOWER(descricao) LIKE LOWER('%" . $search . "%'))";
     }
     if (!empty($data_lancamento)) {
         $filtros[] = "data_lancamento >= '" . $data_lancamento . "'";
@@ -78,6 +77,12 @@ try {
     if (count($filtros) > 0) {
         $query = $query . " WHERE " . implode(" AND ", $filtros);
     }
+
+    // Exibindo Query com filtros ou pesquisa
+    //echo "<pre>";
+    //echo $query;
+    //echo "</pre>";
+
 
     // Buscar no banco de dados
 

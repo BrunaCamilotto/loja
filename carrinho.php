@@ -1,13 +1,16 @@
 <?php
 
+// Inclui o arquivo de conexão com o banco de dados
 require_once("conexao.php");
 
+// Verifica se o parâmetro 'id' foi passado na URL e não está vazio
 if (isset($_GET["id"]) && !empty($_GET["id"])) {
     
     $id = $_GET["id"];
+    // Verifica se o parâmetro 'quantidade' foi passado na URL; se não, define como 1
     $quantidade = (isset($_GET["quantidade"]) && !empty($_GET["quantidade"])) ? $_GET["quantidade"] : 1;
 
-    //  INSERT / UPDATE
+    //  INSERT / UPDATE -- Preparação da consulta SQL para inserir produto no carinho
 
     $stmt = $conn->prepare("
         INSERT INTO carrinho
@@ -19,16 +22,18 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
             quantidade = VALUES(quantidade)
     ");
     $stmt->execute();
+    // Redireciona o usuário de volta à página do carrinho
     header("Location: /loja/carrinho.php");
 }
 
-// SELECT
-
+// SELECT - Preparação da consulta SQL para selecionar os produtos no carinho.
 $stmt = $conn->prepare("
-    SELECT p.id, p.nome, p.preco, c.quantidade
+    SELECT p.id, p.nome, p.preco, c.quantidade,
+           calcula_preco_final(p.preco, :desconto) AS preco_final
     FROM carrinho c
     INNER JOIN produto p ON c.id_produto = p.id
 ");
+$stmt->bindValue(':desconto', 0.20); // Exemplo de desconto de 10%
 $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -54,6 +59,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php
                 if (count($results) == 0) {
                     ?>
+                        <!-- Exibe mensagem caso o carrinho esteja vazio -->
                         <div class="alert alert-dark mt-4" role="alert">
                             Nenhum item no carrinho.
                         </div>
@@ -91,13 +97,16 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     foreach ($results as $item) {
                                         ?>
                                             <tr>
+                                                <!-- Exibe o ID e nome do produto -->
                                                 <td scope="row"><?= $item["id"] ?></td>
                                                 <td scope="row"><?= $item["nome"] ?></td>
+                                                <!-- Seleciona a quantidade do produto no carrinho -->
                                                 <td scope="row">
                                                     <select class="form-select" style="width: 100px" onchange="alterarQuantidadeCarrinho(<?= $item['id'] ?>, this)">
                                                         <?php
                                                             for ($i = 1; $i <= 20; $i++) {
                                                                 ?>
+                                                                     <!-- Marca a opção correspondente à quantidade atual -->
                                                                     <option <?= $item["quantidade"] == $i ? "selected" : "" ?>><?= $i ?></option>
                                                                 <?php
                                                             }
@@ -105,7 +114,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     </select>
                                                 </td>
                                                 <td scope="row" id="preco-produto-<?= $item["id"] ?>"><?= $item["preco"] ?></td>
-                                                <td scope="row" class="total-produto" id="total-produto-<?= $item["id"] ?>"><?= $item["quantidade"] * $item["preco"] ?></td>
+                                                <td scope="row" class="total-produto" id="total-produto-<?= $item["id"] ?>"><?= $item["preco_final"] * $item["quantidade"] ?></td>
                                                 <td scope="row">
                                                     <a href="/loja/remove-carrinho.php?id=<?= $item["id"] ?>">
                                                         <i class="bi bi-trash2"></i>
