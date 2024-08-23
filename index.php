@@ -5,7 +5,6 @@ require_once("conexao.php");
 try {
 
     // Buscar filtros na URL
-
     $queryParams = explode("&", $_SERVER["QUERY_STRING"]);
 
     $search = "";
@@ -79,9 +78,9 @@ try {
     }
 
     // Exibindo Query com filtros ou pesquisa
-    //echo "<pre>";
-    //echo $query;
-    //echo "</pre>";
+    echo "<pre>";
+    echo $query;
+    echo "</pre>";
 
 
     // Buscar no banco de dados

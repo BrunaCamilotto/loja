@@ -31,7 +31,7 @@ $stmt->execute();
                 <span>Você logo receberá um e-mail de confirmação do seu carrinho.</span>
                 <a href="/loja/index.php" class="btn btn-success mt-4">Voltar à página inicial</a> 
             </div>
-        </div>
+        </div>  
 
     </body>
 </html>

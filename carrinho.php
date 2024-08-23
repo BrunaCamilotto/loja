@@ -33,7 +33,7 @@ $stmt = $conn->prepare("
     FROM carrinho c
     INNER JOIN produto p ON c.id_produto = p.id
 ");
-$stmt->bindValue(':desconto', 0.20); // Exemplo de desconto de 10%
+$stmt->bindValue(':desconto', 0.10); // Valor de desconto.
 $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

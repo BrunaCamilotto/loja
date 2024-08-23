@@ -26,7 +26,7 @@ function somarTotalCarrinho() {
     totais_produtos.forEach((total_produto) => {
         valor_total += parseFloat(total_produto.innerHTML);
     });
-    // Atualiza o valor total do carrinho na interface, formatando para 2 casas decimais
+    // Atualiza o valor total do carrinho, formatando para 2 casas decimais
     total_carrinho.innerHTML = valor_total.toFixed(2);
 }
 
