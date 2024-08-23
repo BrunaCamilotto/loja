@@ -89,5 +89,3 @@ INNER JOIN caracteristica AS c
 ON pc.id_caracteristica = c.id
 WHERE pc.id_produto = 1
 ```
-
-teste
